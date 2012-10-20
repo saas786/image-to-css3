@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Romain Berger :: Image to CSS3</title>
+        <meta name="description" content="A very usefull tool to convert your images to css3">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="/styles/main.css">
+    </head>
+    <body>
+        <div id="wrapper">
+            <h1>Image to css3</h1>
+
+            <div id="input">
+                <h2>Convert an image to pure css3</h2>
+                <p><label>Choose an image</label></p>
+                <p><input type="file"></p>
+                <p>Pixel Size :</p>
+                <p id="pixelSize"><input type="range" min="1" max="20" value="10"></p>
+                <p id="pixelSizeValueWrapper"><span id="pixelSizeValue">10</span> px</p>
+                <p class="warning">(be careful, if you select a really low value the script may run for several seconds)</p>
+            </div>
+            <div id="output">
+                <div id="mainPixel"></div>
+            </div>
+
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="scripts/vendor/jquery.min.js"><\/script>')</script>
+        <script src="scripts/imagetocss3.js"></script>
+
+        <script>
+            var _gaq=[['_setAccount','UA-25925169-1'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+</body>
+</html>

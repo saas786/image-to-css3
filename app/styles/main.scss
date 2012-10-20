@@ -1,0 +1,56 @@
+@import "compass/css3";
+
+html{
+	height: 100%;
+}
+body{
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	background: #efefef;
+	font-family: Helvetica, sans-serif;
+	color: #555;
+}
+::selection{
+	background: #9f1919;
+	color: #fff;
+	text-shadow: none;
+}
+::-moz-selection{
+	background: #9f1919;
+	color: #fff;
+	text-shadow: none;
+}
+#wrapper{
+	width: 900px;
+	height: 100%;
+	margin: 0 auto;
+	padding: 50px 30px 0 30px;
+	@include box-shadow(0 0 40px 0 #aaa);
+}
+h1{
+	margin: 0 0 50px 0;
+	color: #555;
+	font-size: 65px;
+	text-align: center;
+	@include text-shadow(4px 4px 2px #ccc);
+}
+h2{
+	text-align: center;
+	color: #9f1919;
+}
+p{
+	font-size: 20px;
+	text-align: center;
+}
+#pixelSize{
+	margin: 4px 0;
+}
+#pixelSizeValueWrapper{
+	margin: 0;
+	font-size: 14px;
+}
+.warning{
+	margin: 20px 0 0 0;
+	font-size: 12px;
+}
