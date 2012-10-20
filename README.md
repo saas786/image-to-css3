@@ -1,6 +1,6 @@
 # Image to CSS3
 
-  This script convert images to css3 using box shadows.
+  Javascript class to convert images to css3 using box shadows.
 
   [Demo](http://romainberger.com/lab/image-to-css3)
 
@@ -21,7 +21,7 @@
     var imageToCSS3 = new ImageToCSS3(img);
   ```
 
-  The class has two method: `createElement()` and `exportCSS()`.
+  The class has two methods: `createElement()` and `exportCSS()`.
   To create an element and to add it to your document:
 
   ```javascript
