@@ -53,6 +53,7 @@ function pixelize(e) {
 		}
 
 		generateCss(colors, maxX, maxY);
+		$('#output').css('height', height);
 	}
 }
 
@@ -66,7 +67,8 @@ function generateCss(colors, maxX, maxY) {
 		'background' : colors[0][0]
 	});
 
-	var boxShadowString = '';
+	var boxShadowString = '',
+		boxShadowExport = '';
 
 	// once again two nested loops. This sucks.
 	for (var x = 0; x < maxX; x++) {
@@ -74,13 +76,29 @@ function generateCss(colors, maxX, maxY) {
 			var boxShadow = (x * pixelSize) + 'px ' + (y * pixelSize) + 'px 0 ' + colors[x][y];
 			boxShadow += ',';
 			boxShadowString += boxShadow;
+			boxShadowExport += boxShadow+'\n\t\t\t';
 		}
 	}
 	// remove the last comma
 	boxShadowString = boxShadowString.slice(0, -1);
+	boxShadowExport = boxShadowExport.slice(0, -5);
 
 	document.querySelector('#input').style.display = 'none';
 
 	// apply the css
 	mainPixel.css('box-shadow', boxShadowString);
+
+	exportCss(boxShadowExport);
+}
+
+function exportCss(boxShadow) {
+	var css = 'div{\n';
+		css += '\twidth: '+pixelSize+'px;\n';
+		css += '\theight: '+pixelSize+'px;\n';
+		css += '\tbackground: '+$('#mainPixel').css('background-color')+';\n';
+		css += '\tbox-shadow: '+boxShadow+';\n}';
+
+	document.querySelector('textarea').innerHTML = css;
+
+	document.querySelector('#code').style.display = 'block';
 }
