@@ -2,9 +2,8 @@ document.querySelector('input[type=range]').addEventListener('change', function(
 	document.querySelector('#pixelSizeValue').innerHTML = this.value;
 });
 
-var pixelSize = document.querySelector('input[type=range]').value;
-
 document.querySelector('input[type=file]').addEventListener('change', function(e) {
+	var pixelSize = document.querySelector('input[type=range]').value;
 	document.querySelector('#input').innerHTML = '<p>Processing ...</p>';
 
 	// read the image without uploading it
@@ -27,10 +26,10 @@ document.querySelector('input[type=file]').addEventListener('change', function(e
 			// get the css generated
 			imageToCSS3.exportCSS(function(css) {
 				document.querySelector('#codeWrapper').innerHTML = css;
+				document.querySelector('#input').style.display = 'none';
 				document.querySelector('#code').style.display = 'block';
 			});
 		});
-
     }
     reader.readAsDataURL(this.files[0]);
 });
