@@ -71,7 +71,7 @@
   The value you use as a parameter determines the amount of blur
 
   ```javascript
-    imageToCSS3.blur(10);
+    imageToCSS3.setBlur(10);
   ```
 
 ### Invert the colors
