@@ -15,7 +15,7 @@ var ImageToCSS3 = function(img) {
 	this.height;
 	this.grayscale = false;
 	this.pixelate = {on: false, size: 0, gap: 0};
-	this.blurValue = 0;
+	this.blur = 0;
 	this.invert = false;
 	this.alpha = 1;
 
@@ -51,8 +51,8 @@ var ImageToCSS3 = function(img) {
 	 *
 	 *	@param integer blur
 	 */
-	this.blur = function(blur) {
-		this.blurValue = blur;
+	this.setBlur = function(blur) {
+		this.blur = blur;
 	}
 
 	/**
@@ -143,10 +143,10 @@ var ImageToCSS3 = function(img) {
 							gapAddedY += self.pixelate.gap;
 							lastGapY = gapAddedY;
 						}
-						var boxShadow = ((x * self.pixelSize) + gapAddedX) + 'px ' + ((y * self.pixelSize) + gapAddedY) + 'px '+self.blurValue+'px ' + color+',';
+						var boxShadow = ((x * self.pixelSize) + gapAddedX) + 'px ' + ((y * self.pixelSize) + gapAddedY) + 'px '+self.blur+'px ' + color+',';
 					}
 					else {
-						var boxShadow = (x * self.pixelSize) + 'px ' + (y * self.pixelSize) + 'px '+self.blurValue+'px ' + color+',';
+						var boxShadow = (x * self.pixelSize) + 'px ' + (y * self.pixelSize) + 'px '+self.blur+'px ' + color+',';
 					}
 
 					// append to the code
