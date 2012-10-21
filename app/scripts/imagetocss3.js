@@ -40,8 +40,8 @@ var ImageToCSS3 = function(img) {
 	this.toPixelated = function(size, gap) {
 		this.setQuality(1);
 		this.pixelate.on = true;
-		this.pixelate.size = size | 20;
-		this.pixelate.gap = gap | 5;
+		this.pixelate.size = size || 20;
+		this.pixelate.gap = gap || 5;
 	}
 
 	/**
@@ -79,15 +79,15 @@ var ImageToCSS3 = function(img) {
 				boxShadowString = '',
 				boxShadowExport = '',
 			// this variable is used to count the number of pixels drawn for the pixelated effect
-				nbrOfPixelX = 0,
-				nbrOfPixelY = 0,
 				gapAddedX = 0,
-				gapAddedY = 0;
+				gapAddedY = 0,
+				lastGapX = 0,
+				lastGapY = 0;
 
 			// two nested loops ? This is slow as heck
-			for (var x = 0; x < maxX; x++) {
-				self.colors[x] = new Array();
-				for (var y = 0; y < maxY; y++) {
+			for (var y = 0; y < maxY; y++) {
+				self.colors[y] = new Array();
+				for (var x = 0; x < maxX; x++) {
 					var imageData = ctx.getImageData((x * self.pixelSize), (y * self.pixelSize), self.pixelSize, self.pixelSize);
 					var data = imageData.data;
 					var alpha = data[3] == 0 ? 0 : 1;
@@ -101,14 +101,16 @@ var ImageToCSS3 = function(img) {
 						var color = 'rgba('+data[0]+','+data[1]+','+data[2]+','+alpha+')';
 					}
 
-					self.colors[x][y] = color;
+					self.colors[y][x] = color;
 
 					if (self.pixelate.on) {
-						if (nbrOfPixelY >= self.pixelate.size) {
-							gapAddedY += (Math.floor(nbrOfPixelY / self.pixelate.size) * self.pixelate.gap);
+						if (x > self.pixelate.size && (parseInt(x / self.pixelate.size) * self.pixelate.gap) > lastGapX) {
+							gapAddedX += self.pixelate.gap;
+							lastGapX = gapAddedX;
 						}
-						if (nbrOfPixelX >= self.pixelate.size) {
-							gapAddedX += (Math.floor(nbrOfPixelX / self.pixelate.size) * self.pixelate.gap);
+						if (y > self.pixelate.size && (parseInt(y / self.pixelate.size) * self.pixelate.gap) > lastGapY) {
+							gapAddedY += self.pixelate.gap;
+							lastGapY = gapAddedY;
 						}
 						var boxShadow = ((x * self.pixelSize) + gapAddedX) + 'px ' + ((y * self.pixelSize) + gapAddedY) + 'px '+self.blurValue+'px ' + color+',';
 					}
@@ -119,10 +121,9 @@ var ImageToCSS3 = function(img) {
 					// append to the code
 					boxShadowString += boxShadow;
 					boxShadowExport += boxShadow+'\n\t\t\t';
-
-					nbrOfPixelY++;
 				}
-				nbrOfPixelX++;
+				lastGapX = 0;
+				gapAddedX = 0;
 			}
 
 			// remove the last comma
