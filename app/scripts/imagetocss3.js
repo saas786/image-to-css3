@@ -13,6 +13,9 @@ var ImageToCSS3 = function(img) {
 	this.colors = new Array();
 	this.width;
 	this.height;
+	this.grayscale = false;
+	this.pixelate = {on: false, size: 0, gap: 0};
+	this.blurValue = 0;
 
 	/**
 	 *	Set the quality of the output. Default to 1 (same quality as the source image)
@@ -21,6 +24,33 @@ var ImageToCSS3 = function(img) {
 	 */
 	this.setQuality = function(quality) {
 		this.pixelSize = quality;
+	}
+
+	this.toGrayscale = function() {
+		this.grayscale = true;
+	}
+
+	/**
+	 *	Set the size of the pixels and the distance between them
+	 *	This function automatically set the quality to 1
+	 *
+	 *	@param integer size Size of the pixel
+	 *	@param integer gap Distance between the pixels
+	 */
+	this.toPixelated = function(size, gap) {
+		this.setQuality(1);
+		this.pixelate.on = true;
+		this.pixelate.size = size | 20;
+		this.pixelate.gap = gap | 5;
+	}
+
+	/**
+	 *	Set the amount of blur to apply to the image
+	 *
+	 *	@param integer blur
+	 */
+	this.blur = function(blur) {
+		this.blurValue = blur;
 	}
 
 	/**
@@ -44,11 +74,15 @@ var ImageToCSS3 = function(img) {
 			ctx.drawImage(img, 0, 0, self.width, self.height);
 
 			var	maxX = self.width / self.pixelSize,
-				maxY = self.height / self.pixelSize;
-
+				maxY = self.height / self.pixelSize,
 			// this two variables will store the raw css code and an indented css code
-			var boxShadowString = '',
-			boxShadowExport = '';
+				boxShadowString = '',
+				boxShadowExport = '',
+			// this variable is used to count the number of pixels drawn for the pixelated effect
+				nbrOfPixelX = 0,
+				nbrOfPixelY = 0,
+				gapAddedX = 0,
+				gapAddedY = 0;
 
 			// two nested loops ? This is slow as heck
 			for (var x = 0; x < maxX; x++) {
@@ -57,15 +91,38 @@ var ImageToCSS3 = function(img) {
 					var imageData = ctx.getImageData((x * self.pixelSize), (y * self.pixelSize), self.pixelSize, self.pixelSize);
 					var data = imageData.data;
 					var alpha = data[3] == 0 ? 0 : 1;
-					var color = 'rgba('+data[0]+','+data[1]+','+data[2]+','+alpha+')';
+
+					// if set to grayscale is true, change the color
+					if (self.grayscale) {
+						var graylevel = parseInt((parseInt(data[0]) + parseInt(data[1]) + parseInt(data[2])) / 3);
+						var color = 'rgba('+graylevel+','+graylevel+','+graylevel+','+alpha+')';
+					}
+					else {
+						var color = 'rgba('+data[0]+','+data[1]+','+data[2]+','+alpha+')';
+					}
+
 					self.colors[x][y] = color;
 
+					if (self.pixelate.on) {
+						if (nbrOfPixelY >= self.pixelate.size) {
+							gapAddedY += (Math.floor(nbrOfPixelY / self.pixelate.size) * self.pixelate.gap);
+						}
+						if (nbrOfPixelX >= self.pixelate.size) {
+							gapAddedX += (Math.floor(nbrOfPixelX / self.pixelate.size) * self.pixelate.gap);
+						}
+						var boxShadow = ((x * self.pixelSize) + gapAddedX) + 'px ' + ((y * self.pixelSize) + gapAddedY) + 'px '+self.blurValue+'px ' + color+',';
+					}
+					else {
+						var boxShadow = (x * self.pixelSize) + 'px ' + (y * self.pixelSize) + 'px '+self.blurValue+'px ' + color+',';
+					}
+
 					// append to the code
-					var boxShadow = (x * self.pixelSize) + 'px ' + (y * self.pixelSize) + 'px 0 ' + color;
-					boxShadow += ',';
 					boxShadowString += boxShadow;
 					boxShadowExport += boxShadow+'\n\t\t\t';
+
+					nbrOfPixelY++;
 				}
+				nbrOfPixelX++;
 			}
 
 			// remove the last comma

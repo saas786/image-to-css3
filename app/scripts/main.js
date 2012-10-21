@@ -18,6 +18,15 @@ document.querySelector('input[type=file]').addEventListener('change', function(e
 		// set the quality
 		imageToCSS3.setQuality(pixelSize);
 
+		// convert to grayscale
+//		imageToCSS3.toGrayscale();
+
+		// pixelate!
+//		imageToCSS3.toPixelated();
+
+		// add blur
+		imageToCSS3.blur(0);
+
 		// get the element created
 		imageToCSS3.createElement(function(element) {
 			var output = document.querySelector('#output');
