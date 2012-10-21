@@ -165,7 +165,16 @@ var ImageToCSS3 = function(img) {
 			var wrapper = document.createElement('div');
 			var mainPixel = document.createElement('div');
 			wrapper.appendChild(mainPixel);
-			wrapper.setAttribute('style', 'width: '+self.width+'px; height: '+self.height+'px;');
+			var wrapperWidth = self.width,
+				wrapperHeight = self.height;
+
+			// adjust the dimension if the pixelated effect is on
+			if (self.pixelate.on) {
+				wrapperWidth += gapAddedY;
+				wrapperHeight += gapAddedY;
+			}
+
+			wrapper.setAttribute('style', 'width: '+wrapperWidth+'px; height: '+wrapperHeight+'px;');
 
 			// apply the css
 			// the first color is the background of the element
