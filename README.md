@@ -47,6 +47,8 @@
 
   There are different effects available. All these methods have to be called before creating the element or generating the css.
 
+  You can combine every effect.
+
 ### Set the quality
 
   The object has a method `setQuality(integer)` which determines the quality of the output generated.
@@ -70,6 +72,29 @@
 
   ```javascript
     imageToCSS3.blur(10);
+  ```
+
+### Invert the colors
+
+  ```javascript
+    imageToCSS3.invertColors();
+  ```
+
+### Change the opacity
+
+  Use a number between 0 and 1
+
+  ```javascript
+    imageToCSS3.setOpacity(.5);
+  ```
+
+### Pixelate
+
+  You can get a pixelated version of the image by using the method `toPixelated()`. It takes to parameters: the size of the pixel,
+  and the distance between them.
+
+  ```javascript
+    imageToCSS3.toPixelated(10, 5);
   ```
 
 ## Notes

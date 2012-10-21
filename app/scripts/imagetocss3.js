@@ -16,6 +16,8 @@ var ImageToCSS3 = function(img) {
 	this.grayscale = false;
 	this.pixelate = {on: false, size: 0, gap: 0};
 	this.blurValue = 0;
+	this.invert = false;
+	this.alpha = 1;
 
 	/**
 	 *	Set the quality of the output. Default to 1 (same quality as the source image)
@@ -51,6 +53,22 @@ var ImageToCSS3 = function(img) {
 	 */
 	this.blur = function(blur) {
 		this.blurValue = blur;
+	}
+
+	/**
+	 *	Invert the colors
+	 */
+	this.invertColors = function() {
+		this.invert = true;
+	}
+
+	/**
+	 *	Set the opacity
+	 *
+	 *	@param float alpha Number between 0 and 1
+	 */
+	this.setOpacity = function(alpha) {
+		this.alpha = alpha;
 	}
 
 	/**
@@ -95,11 +113,24 @@ var ImageToCSS3 = function(img) {
 					// if set to grayscale is true, change the color
 					if (self.grayscale) {
 						var graylevel = parseInt((parseInt(data[0]) + parseInt(data[1]) + parseInt(data[2])) / 3);
-						var color = 'rgba('+graylevel+','+graylevel+','+graylevel+','+alpha+')';
+						var r = graylevel;
+						var g = graylevel;
+						var b = graylevel;
 					}
 					else {
-						var color = 'rgba('+data[0]+','+data[1]+','+data[2]+','+alpha+')';
+						var r = data[0];
+						var g = data[1];
+						var b = data[2];
 					}
+
+					// invert the colors
+					if (self.invert) {
+						r = 255 - r;
+						g = 255 - g;
+						b = 255 - b;
+					}
+
+					var color = 'rgba('+r+','+g+','+b+','+self.alpha+')';
 
 					self.colors[y][x] = color;
 
@@ -138,7 +169,7 @@ var ImageToCSS3 = function(img) {
 
 			// apply the css
 			// the first color is the background of the element
-			var style = 'width: '+self.pixelSize+'px; height: '+self.pixelSize+'px; background: '+self.colors[0][0]+';';
+			var style = 'width: '+self.pixelSize+'px; height: '+self.pixelSize+'px; background: transparent;';
 				style += 'box-shadow: '+boxShadowString;
 			mainPixel.setAttribute('style', style);
 
