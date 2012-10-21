@@ -23,12 +23,12 @@ document.querySelector('input[type=file]').addEventListener('change', function(e
 		imageToCSS3.createElement(function(element) {
 			var output = document.querySelector('#output');
 			output.appendChild(element);
-		});
 
-
-		// get the css generated
-		imageToCSS3.exportCSS(function(css) {
-			console.log(css);
+			// get the css generated
+			imageToCSS3.exportCSS(function(css) {
+				document.querySelector('#codeWrapper').innerHTML = css;
+				document.querySelector('#code').style.display = 'block';
+			});
 		});
 
     }
