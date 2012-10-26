@@ -15,8 +15,14 @@ document.querySelector('input[type=file]').addEventListener('change', function(e
 		// create the object
 		var imageToCSS3 = new ImageToCSS3(img);
 
+		imageToCSS3.setQuality(20);
+
+		imageToCSS3.getGif(function() {
+
+		});
+
 		// set the quality
-		imageToCSS3.setQuality(pixelSize);
+//		imageToCSS3.setQuality(pixelSize);
 
 		// convert to grayscale
 //		imageToCSS3.toGrayscale();
@@ -34,17 +40,18 @@ document.querySelector('input[type=file]').addEventListener('change', function(e
 //		imageToCSS3.blur(3);
 
 		// get the element created
-		imageToCSS3.createElement(function(element) {
-			var output = document.querySelector('#output');
-			output.appendChild(element);
+		// imageToCSS3.createElement(function(element) {
+		// 	var output = document.querySelector('#output');
+		// 	output.appendChild(element);
 
-			// get the css generated
-			imageToCSS3.exportCSS(function(css) {
-				document.querySelector('#codeWrapper').innerHTML = css;
-				document.querySelector('#input').style.display = 'none';
-				document.querySelector('#code').style.display = 'block';
-			});
-		});
+		// 	// get the css generated
+		// 	imageToCSS3.exportCSS(function(css) {
+		// 		document.querySelector('#codeWrapper').innerHTML = css;
+		// 		document.querySelector('#input').style.display = 'none';
+		// 		document.querySelector('#code').style.display = 'block';
+		// 	});
+		// });
     }
+
     reader.readAsDataURL(this.files[0]);
 });

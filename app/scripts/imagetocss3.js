@@ -10,6 +10,7 @@ var ImageToCSS3 = function(img) {
 	this.pixelSize = 1;
 	this.element;
 	this.css = '';
+	this.rawBoxShadow = '';
 	this.colors = new Array();
 	this.width;
 	this.height;
@@ -18,6 +19,10 @@ var ImageToCSS3 = function(img) {
 	this.blur = 0;
 	this.invert = false;
 	this.alpha = 1;
+	this.isGif = false;
+	this.frameArray = new Array();
+	this.freezeTime = 200;
+	this.maxGifFrame = 20;
 
 	/**
 	 *	Set the quality of the output. Default to 1 (same quality as the source image)
@@ -77,12 +82,15 @@ var ImageToCSS3 = function(img) {
 	 *	@param cb Callback function
 	 */
 	this.createElement = function(cb) {
-		var self = this;
+		var self = this,
+			animate = this.isGif;
 
 		var canvas = document.createElement('canvas');
 		var ctx = canvas.getContext('2d');
+		console.log('ok');
 
 		this.img.onload = function() {
+			console.log('ok2');
 			self.width = img.width,
 			self.height = img.height;
 
@@ -186,10 +194,23 @@ var ImageToCSS3 = function(img) {
 
 			// create the indented code
 			self.css = 'div{\n';
+
+			if (animate === true) {
+				self.css += '-webkit-animation: gif .500s steps(1, start) infinite';
+			}
+
 			self.css += '\twidth: '+self.pixelSize+'px;\n';
 			self.css += '\theight: '+self.pixelSize+'px;\n';
 			self.css += '\tbackground: '+self.colors[0][0]+';\n';
 			self.css += '\tbox-shadow: '+boxShadowExport+';\n}';
+
+			if (animate % 1 === 0) {
+				var animate = animate+'%{';
+					animate += boxShadowString;
+					animate += '}';
+
+				self.css = animate;
+			}
 
 			// callback
 			cb(self.element);
@@ -209,7 +230,107 @@ var ImageToCSS3 = function(img) {
 			var self = this;
 			this.createElement(function() {
 				cb(self.css);
-			})
+			});
+		}
+	}
+
+	/**
+	 *	Convert a gif
+	 *
+	 *	@param cb Callback function
+	 */
+	this.getGif = function(cb) {
+		var self = this;
+
+		// get the images
+		self.decodeGif(function() {
+			var nbrOfFrame = self.frameArray.length;
+
+			for (var i = 0; i < nbrOfFrame; i++) {
+				var frame = new Image;
+				frame.src = self.frameArray[i];
+
+				var image = new ImageToCSS3(frame);
+				image.isGif = true;
+
+				if (i == 0) {
+				image.createElement(function(style){
+						console.log(style);
+					});
+				}
+			}
+		});
+	}
+
+	/**
+	 *	Set the time between every shoot
+	 *	usefull to adapt to every gif
+	 *
+	 *	@param integer time Time in milliseconds
+	 */
+	this.setGifTime = function(time) {
+		this.freezeTime = time;
+	}
+
+	/**
+	 *	Decompose the gif into different frames.
+	 *
+	 *	@param cb Callback function
+	 */
+	this.decodeGif = function(cb) {
+		var self = this;
+		var canvas = document.createElement('canvas');
+		var ctx = canvas.getContext('2d');
+		var time = self.freezeTime;
+
+		this.img.onload = function() {
+			self.width = img.width,
+			self.height = img.height;
+
+			canvas.width  = self.width;
+			canvas.height = self.height;
+
+
+			// loop to get all the frames
+			(function captureImage() {
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				ctx.drawImage(img, 0, 0, self.width, self.height);
+				frame = canvas.toDataURL('image/png');
+
+				var a = frame.replace(/^data:image\/(png|jpg);base64,/, '');
+
+				// avoid infinite recursion because it's buggy as hell
+				if (self.frameArray.length > self.maxGifFrame) {
+					cb();
+				}
+				else {
+					if (self.frameArray.length > 0) {
+						// we compare the current frame to the first collected
+						var lastFrame = self.frameArray.length - 1;
+						if (lastFrame > 0) {
+							var b = self.frameArray[lastFrame];
+							b = b.replace(/^data:image\/(png|jpg);base64,/, '');
+						}
+						else {
+							var b = null;
+						}
+
+						if (a === b) {
+							// we got back to the beginning
+							cb();
+						}
+						else {
+							// add the frame to the array
+							self.frameArray.push(frame);
+							setTimeout(captureImage, time);
+						}
+					}
+					else {
+						self.frameArray.push(frame);
+						setTimeout(captureImage, time);
+					}
+				}
+			})();
 		}
 	}
 }
